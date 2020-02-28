@@ -1,14 +1,14 @@
-@import url('https://fonts.googleapis.com/css?family=Inconsolata&display=swap');
+@import url("https://fonts.googleapis.com/css?family=Inconsolata&display=swap");
 
 body {
-  font-size: .875rem;
+  font-size: 0.875rem;
 }
 section.col {
   padding-top: 133px;
 }
 
 @media (min-width: 768px) {
-    section.col {
+  section.col {
     padding-top: 48px;
   }
 }
@@ -56,9 +56,9 @@ section.col {
   min-height: 1px;
   margin-right: 5px;
   border-radius: 300px 300px 0 0;
-  background: #ED213A;
-  background: -webkit-linear-gradient(to bottom, #93291E, #ED213A);
-  background: linear-gradient(to bottom, #93291E, #ED213A);
+  background: #ed213a;
+  background: -webkit-linear-gradient(to bottom, #93291e, #ed213a);
+  background: linear-gradient(to bottom, #93291e, #ed213a);
 }
 
 .visual_area .bars.animate .bar {
@@ -67,9 +67,9 @@ section.col {
 }
 
 .visual_area .bars .bar.highlighted {
-  background: #FFFFFF;
-  background: -webkit-linear-gradient(to bottom, #EF3B36, #FFFFFF);
-  background: linear-gradient(to bottom, #EF3B36, #FFFFFF);
+  background: #ffffff;
+  background: -webkit-linear-gradient(to bottom, #ef3b36, #ffffff);
+  background: linear-gradient(to bottom, #ef3b36, #ffffff);
 }
 
 .visual_area .bars .bar.completed {
@@ -119,17 +119,17 @@ section.col {
 .visual_area .array_wrap .array_elem {
   position: relative;
   display: inline-block;
-  font-family: 'Inconsolata', monospace;
+  font-family: "Inconsolata", monospace;
   padding: 5px 20px;
   font-size: 15px;
   box-shadow: 1px 1px 0 0 #c2c2c2, inset 1px 1px 0 0 #c2c2c2;
   letter-spacing: 1px;
-  margin-bottom: 25px;
+  margin: 5px 5px 20px 5px;
   vertical-align: middle;
 }
 
 .binary_search.visual_area .array_wrap .array_elem {
-  margin-bottom: 50px;
+  margin: 5px 5px 20px 5px;
 }
 
 .visual_area .array_wrap .array_elem.found {
@@ -140,7 +140,7 @@ section.col {
 
 .visual_area .array_wrap .array_elem.completed {
   opacity: 0.7;
-  color: darkgrey;
+  color: #e11616;
 }
 
 .visual_area .array_wrap .array_elem:after {
@@ -155,6 +155,7 @@ section.col {
   color: #fff;
   box-shadow: 1px 1px 0 0 #000, inset 1px 1px 0 0 #000;
   font-size: 10px;
+  display: none;
 }
 
 .binary_search.visual_area .array_wrap .array_elem:before {
@@ -162,7 +163,7 @@ section.col {
   position: absolute;
   content: attr(data-search-index);
   font-size: 12px;
-  bottom: -45px;
+  bottom: -28px;
   left: 50%;
   transform: translate(-50%, -50%);
 }
@@ -216,7 +217,7 @@ section.col {
 
 .resizer .plus::before,
 .resizer .plus::after {
-  content: '';
+  content: "";
   position: absolute;
   height: 1px;
   width: 100%;
@@ -246,7 +247,7 @@ section.col {
   position: relative;
   display: block;
   color: #e6e6e6;
-  font-family: 'Inconsolata', monospace;
+  font-family: "Inconsolata", monospace;
   white-space: pre;
   font-size: 15px;
   line-height: 2;

@@ -35,11 +35,12 @@
           </li>
         </ul>
         <form class="form-inline my-2 my-lg-0">
+          <span id="speed" data-seconds="1000" title="speed" class="d-none">1×</span>
           <input type="number" name="dataset_size" id="dataset_size"
             placeholder="Enter Dataset" value="20"
             class="form-control" min="2" max="100">
           <button id="generate" class="btn btn-outline-primary my-2 my-sm-0
-            ml-2" type="button">Generate</button>
+            ml-2" type="button">Generate a Random Array</button>
         </form>
       </div>
     </nav>
@@ -69,7 +70,7 @@
                 </div>
               </div>
             </div>
-            <div class="row result_area">
+            <div class="row result_area text-center">
               <div class="col">
                 <div id="result"></div>
               </div>
