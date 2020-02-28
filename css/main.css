@@ -139,8 +139,11 @@ section.col {
 }
 
 .visual_area .array_wrap .array_elem.completed {
-  opacity: 0.7;
-  color: #e11616;
+  opacity: 0.5;
+  background: #e11616;
+  color: #fff;
+  border: solid 1px #e11616;
+  box-shadow: none;
 }
 
 .visual_area .array_wrap .array_elem:after {
