@@ -1,10 +1,6 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { linearSearch } from '../lib/algorithms/search/linearSearch';
-import { binarySearch } from '../lib/algorithms/search/binarySearch';
-import { selectionSort } from '../lib/algorithms/sort/selectionSort';
-import { bubbleSort } from '../lib/algorithms/sort/bubbleSort';
 
 const ALGORITHMS = [
   { key: 'linear-search', type: 'Search', strategy: 'Linear', label: 'Linear Search' },
@@ -151,62 +147,197 @@ export default function AlgorithmVisualizer() {
 
   const runLinearSearch = useCallback(
     async (target) => {
-      const resultData = await linearSearch({
-        array: dataset,
-        target,
-        wait,
-        createStatus: createSearchStatus,
-        cloneStatuses: cloneSearchStates,
-        onStatesChange: (states) => setSearchStatuses(states),
-      });
+      const states = dataset.map(() => createSearchStatus());
+      setSearchStatuses(cloneSearchStates(states));
 
-      setResult(resultData);
+      for (let index = 0; index < dataset.length; index += 1) {
+        states.forEach((state) => {
+          state.highlight = false;
+        });
+        states[index].highlight = true;
+        setSearchStatuses(cloneSearchStates(states));
+        await wait();
+
+        if (dataset[index] === target) {
+          states[index].highlight = false;
+          states[index].found = true;
+          setSearchStatuses(cloneSearchStates(states));
+          setResult({ status: 'found', element: target, index });
+          return;
+        }
+
+        states[index].highlight = false;
+        states[index].completed = true;
+        setSearchStatuses(cloneSearchStates(states));
+      }
+
+      setResult({ status: 'not-found', element: target });
     },
     [dataset, wait],
   );
 
   const runBinarySearch = useCallback(
     async (target) => {
-      const resultData = await binarySearch({
-        array: dataset,
-        target,
-        wait,
-        createStatus: createSearchStatus,
-        cloneStatuses: cloneSearchStates,
-        onStatesChange: (states) => setSearchStatuses(states),
-      });
+      if (dataset.length === 0) {
+        setSearchStatuses([]);
+        setResult({ status: 'not-found', element: target });
+        return;
+      }
 
-      setResult(resultData);
+      const states = dataset.map(() => createSearchStatus());
+
+      let low = 0;
+      let high = dataset.length - 1;
+
+      while (low <= high) {
+        states.forEach((state, idx) => {
+          state.highlight = false;
+          state.searchIndex = '';
+          if (idx < low || idx > high) {
+            state.completed = true;
+          }
+        });
+
+        const mid = Math.floor((low + high) / 2);
+        states[low].searchIndex = 'low';
+        states[high].searchIndex = 'high';
+        states[mid].searchIndex = 'mid';
+        states[mid].highlight = true;
+        setSearchStatuses(cloneSearchStates(states));
+        await wait();
+
+        if (dataset[mid] === target) {
+          states[mid].highlight = false;
+          states[mid].found = true;
+          setSearchStatuses(cloneSearchStates(states));
+          setResult({ status: 'found', element: target, index: mid });
+          return;
+        }
+
+        states[mid].highlight = false;
+        states[mid].completed = true;
+
+        if (dataset[mid] < target) {
+          for (let idx = low; idx <= mid; idx += 1) {
+            states[idx].completed = true;
+          }
+          low = mid + 1;
+        } else {
+          for (let idx = mid; idx <= high; idx += 1) {
+            states[idx].completed = true;
+          }
+          high = mid - 1;
+        }
+
+        setSearchStatuses(cloneSearchStates(states));
+        await wait();
+      }
+
+      setSearchStatuses(cloneSearchStates(states));
+      setResult({ status: 'not-found', element: target });
     },
     [dataset, wait],
   );
 
   const runSelectionSort = useCallback(async () => {
-    const resultData = await selectionSort({
-      array: dataset,
-      wait,
-      createStatus: createBarStatus,
-      cloneStatuses: cloneBarStates,
-      onStatesChange: (states) => setBarStatuses(states),
-      onArrayChange: (values) => setDataset(values),
-    });
+    const arr = [...dataset];
+    const states = arr.map(() => createBarStatus());
+    setBarStatuses(cloneBarStates(states));
 
-    setDataset(resultData.array);
-    setResult({ status: resultData.status });
+    for (let i = 0; i < arr.length; i += 1) {
+      states.forEach((state) => {
+        if (!state.completed) {
+          state.highlight = false;
+          state.min = false;
+        }
+      });
+
+      let minIndex = i;
+      states[i].highlight = true;
+      states[i].min = true;
+      setBarStatuses(cloneBarStates(states));
+
+      for (let j = i + 1; j < arr.length; j += 1) {
+        states[j].highlight = true;
+        setBarStatuses(cloneBarStates(states));
+        await wait(2);
+
+        if (arr[j] < arr[minIndex]) {
+          states[minIndex].min = false;
+          minIndex = j;
+          states[minIndex].min = true;
+        }
+
+        if (j !== minIndex) {
+          states[j].highlight = false;
+        }
+        setBarStatuses(cloneBarStates(states));
+      }
+
+      if (minIndex !== i) {
+        [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+        setDataset([...arr]);
+        await wait(2);
+      }
+
+      states[i].completed = true;
+      states[i].highlight = false;
+      states[i].min = false;
+      if (minIndex !== i) {
+        states[minIndex].highlight = false;
+        states[minIndex].min = false;
+      }
+      setBarStatuses(cloneBarStates(states));
+    }
+
+    states.forEach((state) => {
+      state.completed = true;
+      state.highlight = false;
+      state.min = false;
+    });
+    setBarStatuses(cloneBarStates(states));
+    setResult({ status: 'sorted' });
   }, [dataset, wait]);
 
   const runBubbleSort = useCallback(async () => {
-    const resultData = await bubbleSort({
-      array: dataset,
-      wait,
-      createStatus: createBarStatus,
-      cloneStatuses: cloneBarStates,
-      onStatesChange: (states) => setBarStatuses(states),
-      onArrayChange: (values) => setDataset(values),
+    const arr = [...dataset];
+    const states = arr.map(() => createBarStatus());
+    setBarStatuses(cloneBarStates(states));
+
+    for (let i = 0; i < arr.length - 1; i += 1) {
+      for (let j = 0; j < arr.length - i - 1; j += 1) {
+        states.forEach((state) => {
+          if (!state.completed) {
+            state.highlight = false;
+            state.min = false;
+          }
+        });
+
+        states[j].highlight = true;
+        states[j + 1].highlight = true;
+        setBarStatuses(cloneBarStates(states));
+        await wait(2);
+
+        if (arr[j] > arr[j + 1]) {
+          [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+          setDataset([...arr]);
+          await wait(2);
+        }
+      }
+
+      states[arr.length - i - 1].completed = true;
+      states[arr.length - i - 1].highlight = false;
+      setBarStatuses(cloneBarStates(states));
+    }
+
+    states.forEach((state) => {
+      state.completed = true;
+      state.highlight = false;
+      state.min = false;
     });
 
-    setDataset(resultData.array);
-    setResult({ status: resultData.status });
+    setBarStatuses(cloneBarStates(states));
+    setResult({ status: 'sorted' });
   }, [dataset, wait]);
 
   const handleSearch = async () => {
